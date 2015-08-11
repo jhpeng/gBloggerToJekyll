@@ -7,3 +7,12 @@ F:\CSharp\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManag
 F:\CSharp\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.csproj.GenerateResource.Cache
 F:\CSharp\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.exe
 F:\CSharp\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.pdb
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\bin\Debug\gLinkConversionManager.exe.config
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\bin\Debug\gLinkConversionManager.exe
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\bin\Debug\gLinkConversionManager.pdb
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.csprojResolveAssemblyReference.cache
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.frmMain.resources
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.Properties.Resources.resources
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.csproj.GenerateResource.Cache
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.exe
+C:\downloads\gBloggerToJekyll\gLinkConversionManager\obj\Debug\gLinkConversionManager.pdb

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Microsoft.International.Converters.PinYinConverter;
+using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 namespace gBloggerToJekyll
 {
@@ -24,9 +27,77 @@ namespace gBloggerToJekyll
 
 		}
 
+        ///
+        /// 使用系統 kernel32.dll 進行轉換
+        ///
+        private const int LocaleSystemDefault = 0x0800;
+        private const int LcmapSimplifiedChinese = 0x02000000;
+        private const int LcmapTraditionalChinese = 0x04000000;
+
+        [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+        private static extern int LCMapString(int locale, int dwMapFlags, string lpSrcStr, int cchSrc,
+                                              [Out] string lpDestStr, int cchDest);
+
+        public static string ToSimplified(string argSource)
+        {
+            var t = new String(' ', argSource.Length);
+            LCMapString(LocaleSystemDefault, LcmapSimplifiedChinese, argSource, argSource.Length, t, argSource.Length);
+            return t;
+        }
+
+        public static string ToTraditional(string argSource)
+        {
+            var t = new String(' ', argSource.Length);
+            LCMapString(LocaleSystemDefault, LcmapTraditionalChinese, argSource, argSource.Length, t, argSource.Length);
+            return t;
+        }
+
+
+        ///  <summary> 
+        ///  漢字轉化為拼音
+        ///  </summary> 
+        ///  <param name=”str “> 漢字</param> 
+        ///  <returns> 全拼</returns> 
+        public static string GetPinyin(string str)
+        {
+            string r = string.Empty;
+            foreach (char obj in str)
+            {
+                try
+                {
+                    ChineseChar chineseChar = new ChineseChar(obj);
+                    string t = chineseChar.Pinyins[0].ToString();
+                    r += t.Substring(0, t.Length - 1);
+                }
+                catch
+                {
+                    r += obj.ToString();
+                }
+            }
+            return r;
+        }
+
+
+        public string FilterGdName(string orgString)
+        {
+            string newString = string.Empty;
+            MatchCollection matches = Regex.Matches(orgString, @"[^\W_]+", RegexOptions.IgnoreCase);
+            foreach (Match match in matches)
+            {
+                newString += match.Value;
+            }
+            return newString;
+        }
+
 		public void SavePost(BloggerManager.PostInfo postInfo)
 		{
-			string filename = processFileName(postInfo.Url, postInfo.Published, ".md");
+
+            //Title to pinyin
+            string pinyin = ToSimplified(postInfo.Title);
+            pinyin = GetPinyin(pinyin);
+            pinyin = FilterGdName(pinyin);
+
+            string filename = processFileName(pinyin, postInfo.Published, ".md");
 
 			string frontMatter = createPostFrontMatter(postInfo.Title, postInfo.AuthorName, postInfo.Tags);
 			//string fmFilename = saveToFile(frontMatter, filename, ".fm", _strSaveFolderTempName);
@@ -129,9 +200,9 @@ namespace gBloggerToJekyll
 			return outputString;
 		}
 
-		private string processFileName(string postUrl, DateTime? date, string extension)
+		private string processFileName(string postTitle, DateTime? date, string extension)
 		{
-			string postName = Path.GetFileNameWithoutExtension(new Uri(postUrl).AbsolutePath).Trim().ToLower();
+            string postName = postTitle.Trim().ToLower();
 			string postDate = date.HasValue ? date.Value.ToString("yyyy-MM-dd").Trim() : DateTime.Now.ToString("yyyy-MM-dd").Trim();
 			string postFilename = postDate + "-" + postName + extension;
 			return postFilename;
